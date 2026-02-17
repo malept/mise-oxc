@@ -1,0 +1,54 @@
+[tasks.format]
+description = "Format repository files"
+depends = ["format:*"]
+
+[tasks."format:mise"]
+description = "Format mise config"
+run = "{{ mise_bin }} fmt --all"
+
+[tasks."format:stylua"]
+tools.stylua = "latest"
+description = "Format lua files"
+run = "stylua --syntax lua51 ."
+sources = ["**/*.lua"]
+
+[tasks.lint]
+description = "Lint repository files"
+depends = ["lint:*"]
+
+[tasks."lint:editorconfig"]
+tools.editorconfig-checker = "latest"
+description = "Check that files conform to EditorConfig rules"
+run = "ec -exclude LICENSE"
+
+[tasks."lint:luac"]
+# luac binaries are not installable via mise
+tools.fd = "latest"
+description = "Check lua syntax with luac"
+# -p: parse only
+run = "fd --glob '*.lua' | xargs luac -p"
+sources = ["**/*.lua"]
+
+[tasks."lint:luals"]
+tools."lua-language-server" = "latest"
+description = "Lint lua files with luacheck"
+run = "lua-language-server --check=. --checklevel=Hint"
+sources = ["**/*.lua"]
+
+[tasks."lint:stylua"]
+tools.stylua = "latest"
+description = "Check formatting of lua files with stylua"
+run = "stylua --syntax lua51 --check ."
+sources = ["**/*.lua"]
+
+[tasks.test]
+description = "Run integration tests"
+tools.bats = "latest"
+tools.vfox = "latest"
+run = "bats test/mise"
+
+[tasks.debug-test]
+description = "Run integration tests (with debugging output)"
+tools.bats = "latest"
+tools.vfox = "latest"
+run = "MISE_VERBOSE=1 MISE_DEBUG=1 bats --verbose-run --trace test/mise"
