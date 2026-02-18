@@ -58,7 +58,7 @@ end
 
 ---Cached version of [`allReleaseVersions`](lua://allReleaseVersions)
 function M.cachedReleaseVersions()
-  return cache.valueFunc(M.allReleaseVersions, "releaseVersions")
+  return cache.value(M.allReleaseVersions, "releaseVersions")
 end
 
 ---@class GHReleaseVersionAsset
